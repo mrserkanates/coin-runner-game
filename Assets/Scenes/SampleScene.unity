@@ -1299,6 +1299,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   verticalSpeed: 5
   horizontalSpeed: 8
+  scalingIncrease: 100
   platformMaterial: {fileID: 2100000, guid: 273b75c234d2bbb43b0fb8ad3e950fad, type: 2}
 --- !u!23 &365382331996147004
 MeshRenderer:
@@ -1351,7 +1352,7 @@ Transform:
   m_GameObject: {fileID: 2167046415496916201}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.338, z: 0}
-  m_LocalScale: {x: 300, y: 300, z: 300}
+  m_LocalScale: {x: 200, y: 200, z: 200}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
