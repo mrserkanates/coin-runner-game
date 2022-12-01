@@ -16,8 +16,8 @@ public class LevelGenerator : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] private int metersOfOneUnit;
     [SerializeField] private int platformSize;
-    private int minCoinAtSinglePlatform = 3;
-    private int maxCoinAtSinglePlatform = 8;
+    private int minCoinAtSinglePlatform = 2;
+    private int maxCoinAtSinglePlatform = 5;
 
     void Start()
     {
@@ -31,7 +31,7 @@ public class LevelGenerator : MonoBehaviour
             if (platformIndex > 1){ // do not fill first platform
                 FillPlatform(newPlatform.transform);
             }
-            currentPlatformPoint += Vector3.forward * platformPrefab.transform.localScale.z * metersOfOneUnit;
+            currentPlatformPoint += Vector3.right * platformPrefab.transform.localScale.x * metersOfOneUnit;
         }
     }
 
@@ -40,12 +40,12 @@ public class LevelGenerator : MonoBehaviour
         float pSizeZ = tfPlatform.localScale.z * metersOfOneUnit;
         int coinAmount = Random.Range(minCoinAtSinglePlatform, maxCoinAtSinglePlatform + 1);
 
-        Vector3 randomCoinPos = new Vector3(Random.Range(0, pSizeX) - pSizeX / 2, 0.5f, Random.Range(0, pSizeZ) - pSizeZ / 2);
+        Vector3 randomCoinPos = new Vector3(Random.Range(0, pSizeZ) - pSizeZ / 2, 0.5f, Random.Range(0, pSizeX) - pSizeX / 2);
         for (int coinIndex = 0; coinIndex < coinAmount; coinIndex++){
             GameObject newCoin = Instantiate(coinPrefab, randomCoinPos, Quaternion.identity, tfPlatform);
             newCoin.transform.localPosition = randomCoinPos;
             newCoin.transform.localRotation = Quaternion.Euler(0, (Random.Range(0, 13) - 7) * 15, 0);
-            randomCoinPos = new Vector3(Random.Range(0, pSizeX) - pSizeX / 2, 0.5f, Random.Range(0, pSizeZ) - pSizeZ / 2);
+            randomCoinPos = new Vector3(Random.Range(0, pSizeZ) - pSizeZ / 2, 0.5f, Random.Range(0, pSizeX) - pSizeX / 2);
         }
     }
 }
