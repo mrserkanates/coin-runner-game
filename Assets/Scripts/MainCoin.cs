@@ -12,7 +12,6 @@ public class MainCoin : MonoBehaviour
     private bool isMoving = false;
     private List<Coin> collectedCoins;
     private bool isScaling = false;
-    
 
     private void Awake() {
         collectedCoins = new List<Coin>();
@@ -50,16 +49,15 @@ public class MainCoin : MonoBehaviour
     {
         isMoving = true;
     }
-
-    private void OnTriggerEnter(Collider other) {
-        if (other.gameObject.tag == "Coin"){
-            collectedCoins.Add(other.gameObject.GetComponent<Coin>());
-            other.gameObject.GetComponent<Collider>().isTrigger = false;
-            other.gameObject.AddComponent<CoinMovement>();
+    
+    private void OnCollisionEnter(Collision col) {
+        if (col.gameObject.tag == "Coin"){
+            collectedCoins.Add(col.gameObject.GetComponent<Coin>());
+            col.gameObject.AddComponent<CoinMovement>();
             if (collectedCoins.Count == 1)
-                other.gameObject.GetComponent<CoinMovement>().ConnectedCoin = transform;
+                col.gameObject.GetComponent<CoinMovement>().ConnectedCoin = transform;
             else
-                other.gameObject.GetComponent<CoinMovement>().ConnectedCoin = collectedCoins[collectedCoins.Count - 2].transform;
+                col.gameObject.GetComponent<CoinMovement>().ConnectedCoin = collectedCoins[collectedCoins.Count - 2].transform;
             if (isScaling){
                 StopCoroutine(ScaleUpAndDown());
                 isScaling = false;
