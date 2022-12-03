@@ -1438,7 +1438,7 @@ GameObject:
   - component: {fileID: 2519462735591602680}
   m_Layer: 0
   m_Name: MainCoin
-  m_TagString: Untagged
+  m_TagString: MainCoin
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

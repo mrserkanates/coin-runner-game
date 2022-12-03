@@ -36,37 +36,39 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\SplineMesh\Scripts\MeshProcessing\SplineExtrusion.cs" />
-     <Compile Include="Assets\Scripts\Coin.cs" />
      <Compile Include="Assets\Scripts\EventManager.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Example\ExampleSower.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\MeshProcessing\SourceMesh.cs" />
      <Compile Include="Assets\Scripts\MainCoin.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Bezier\SplineNode.cs" />
-     <Compile Include="Assets\SplineMesh\Scripts\Utils\UOUtility.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Example\ExampleFollowSpline.cs" />
-     <Compile Include="Assets\SplineMesh\Scripts\Example\ExampleContortAlong.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Utils\MeshUtility.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Example\ExampleGrowingRoot.cs" />
-     <Compile Include="Assets\SplineMesh\Scripts\Bezier\CubicBezierCurve.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\MeshProcessing\SplineMeshTiling.cs" />
+     <Compile Include="Assets\SplineMesh\Scripts\Utils\CameraUtility.cs" />
+     <Compile Include="Assets\SplineMesh\Scripts\Bezier\CurveSample.cs" />
+     <Compile Include="Assets\Scripts\GameManager.cs" />
+     <Compile Include="Assets\SplineMesh\Scripts\Bezier\SplineSmoother.cs" />
+     <Compile Include="Assets\SplineMesh\Scripts\MeshProcessing\SplineExtrusion.cs" />
+     <Compile Include="Assets\Scripts\Coin.cs" />
+     <Compile Include="Assets\SplineMesh\Scripts\Utils\UOUtility.cs" />
+     <Compile Include="Assets\SplineMesh\Scripts\Example\ExampleContortAlong.cs" />
+     <Compile Include="Assets\Scripts\Road.cs" />
+     <Compile Include="Assets\SplineMesh\Scripts\Bezier\CubicBezierCurve.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\MeshProcessing\MeshVertex.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\MeshProcessing\ExtrusionSegment.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Example\RopeBuilder.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
      <Compile Include="Assets\Scripts\LevelGenerator.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Example\ExampleTrack.cs" />
-     <Compile Include="Assets\SplineMesh\Scripts\Utils\CameraUtility.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Bezier\Spline.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\MeshProcessing\MeshBender.cs" />
      <Compile Include="Assets\Scripts\Events.cs" />
-     <Compile Include="Assets\SplineMesh\Scripts\Bezier\CurveSample.cs" />
      <Compile Include="Assets\Scripts\MovementCollider.cs" />
      <Compile Include="Assets\SplineMesh\Scripts\Example\ExampleTentacle.cs" />
      <Compile Include="Assets\Scripts\CoinMovement.cs" />
-     <Compile Include="Assets\Scripts\GameManager.cs" />
-     <Compile Include="Assets\SplineMesh\Scripts\Bezier\SplineSmoother.cs" />
-     <Compile Include="Assets\Scripts\Road.cs" />
+     <Compile Include="Assets\Scripts\Prop.cs" />
+     <Compile Include="Assets\Scripts\Axe.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
@@ -725,53 +727,26 @@
     <Reference Include="System.Xml.Serialization">
         <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.8f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.Flow.Editor">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.VisualScripting.Flow.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.VSCode.Editor">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Shaders">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.RenderPipelines.Universal.Runtime">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="PPv2URPConverters">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\PPv2URPConverters.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualStudio.Editor">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Timeline">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Core.Editor">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.VisualScripting.Core.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.State.Editor">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.VisualScripting.State.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Burst.Editor">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Searcher.Editor">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.Runtime">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.Flow">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.VisualScripting.Flow.dll</HintPath>
+    <Reference Include="Unity.ProBuilder">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.ProBuilder.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
@@ -788,23 +763,68 @@
     <Reference Include="UnityEngine.UI">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.ShaderGraph.Editor">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Cinemachine">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Cinemachine.dll</HintPath>
+    </Reference>
+    <Reference Include="com.unity.cinemachine.editor">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\com.unity.cinemachine.editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mathematics.Editor">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.Flow.Editor">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.VisualScripting.Flow.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Universal.Runtime">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="PPv2URPConverters">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\PPv2URPConverters.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder.AddOns.Editor">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.ProBuilder.AddOns.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualStudio.Editor">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Timeline">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.Core.Editor">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.VisualScripting.Core.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Editor">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Core.Runtime">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder.Editor">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.ProBuilder.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.Flow">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.VisualScripting.Flow.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.PlasticSCM.Editor">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Services.Core">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.Services.Core.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Core">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.VisualScripting.Core.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ShaderGraph.Editor">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Services.Core">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.Services.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Cinemachine">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Cinemachine.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Services.Core.Analytics">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.Services.Core.Analytics.dll</HintPath>
@@ -815,8 +835,8 @@
     <Reference Include="Unity.RenderPipelines.Universal.Editor">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="com.unity.cinemachine.editor">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\com.unity.cinemachine.editor.dll</HintPath>
+    <Reference Include="Unity.ProBuilder.AssetIdRemapUtility">
+        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.ProBuilder.AssetIdRemapUtility.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Shared.Editor">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.VisualScripting.Shared.Editor.dll</HintPath>
@@ -827,32 +847,14 @@
     <Reference Include="Unity.Timeline.Editor">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Mathematics.Editor">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Editor">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.State">
         <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.VisualScripting.State.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ProBuilder">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.ProBuilder.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ProBuilder.AddOns.Editor">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.ProBuilder.AddOns.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ProBuilder.Editor">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.ProBuilder.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ProBuilder.AssetIdRemapUtility">
-        <HintPath>C:\Users\user\Desktop\Coin Runner Game\coin-runner-game\Library\ScriptAssemblies\Unity.ProBuilder.AssetIdRemapUtility.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -20,12 +20,18 @@ public class CoinMovement : MonoBehaviour
         Destroy(GetComponent<Collider>());
     }
 
+    public void DropCoin(){
+        Destroy(GetComponent<CoinMovement>());
+    }
+
     void FixedUpdate()
     {
-        Vector3 newPosition = ConnectedCoin.position + ConnectedCoin.right * radius * 2;
-        rb.MovePosition(Vector3.Lerp(transform.position, newPosition, Time.fixedDeltaTime * followSpeed));
-        rb.MoveRotation(Quaternion.RotateTowards(transform.rotation, ConnectedCoin.rotation, 360 * Time.fixedDeltaTime));
-        transform.localScale = Vector3.Lerp(transform.localScale, ConnectedCoin.localScale, Time.fixedDeltaTime * 60);
+        if (ConnectedCoin != null){
+            Vector3 newPosition = ConnectedCoin.position + ConnectedCoin.right * radius * 2;
+            rb.MovePosition(Vector3.Lerp(transform.position, newPosition, Time.fixedDeltaTime * followSpeed));
+            rb.MoveRotation(Quaternion.RotateTowards(transform.rotation, ConnectedCoin.rotation, 120 * Time.fixedDeltaTime));
+            transform.localScale = Vector3.Lerp(transform.localScale, ConnectedCoin.localScale, Time.fixedDeltaTime * 60);
+        }
     }
     
 }

@@ -25,18 +25,19 @@ public class LevelGenerator : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] private int metersOfOneUnit;
     [SerializeField] private int platformSize;
-    private int minCoinAtSinglePlatform = 1;
-    private int maxCoinAtSinglePlatform = 4;
+    private int minCoinAtSingleRoad = 1;
+    private int maxCoinAtSingleRoad = 4;
 
     private float roadLength;
+    private float roadWidth;
     private float roadJunctionLength;
 
     void Start()
     {
         roadLength = 10f;
+        roadWidth = 6f;
         roadJunctionLength = 6f;
         GenerateLevel();
-        Debug.Log("Sizex: " + roadPrefab.GetComponent<Collider>().bounds.size.x);
     }
 
     private void GenerateLevel(){
@@ -57,18 +58,70 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    private void FillPlatform(Transform tfPlatform){
-        float pSizeX = tfPlatform.localScale.x * metersOfOneUnit;
-        float pSizeZ = tfPlatform.localScale.z * metersOfOneUnit;
-        int coinAmount = Random.Range(minCoinAtSinglePlatform, maxCoinAtSinglePlatform + 1);
+    private void FillPlatform(Transform tfRoad){
+        if (tfRoad.GetComponent<Road>().RoadType == RoadType.R_Forward){ // if it is vertical road
 
-        Vector3 randomCoinPos = new Vector3(Random.Range(0, pSizeZ) - pSizeZ / 2, 0.8f, Random.Range(0, pSizeX) - pSizeX / 2);
-        for (int coinIndex = 0; coinIndex < coinAmount; coinIndex++){
-            GameObject newCoin = Instantiate(coinPrefab, randomCoinPos, Quaternion.identity, tfPlatform);
-            newCoin.transform.localPosition = randomCoinPos;
-            newCoin.transform.localRotation = Quaternion.Euler(0, (Random.Range(0, 13) - 7) * 15, 0);
-            randomCoinPos = new Vector3(Random.Range(0, pSizeZ) - pSizeZ / 2, 0.8f, Random.Range(0, pSizeX) - pSizeX / 2);
+            // spawn coins and traps at random positions 
+
+            ////////// COIN //////////
+            int coinAmount = Random.Range(minCoinAtSingleRoad, maxCoinAtSingleRoad + 1);
+            Vector3 randomCoinPos = GetRandomPosOnRoad(roadLength, roadWidth, 0.8f);
+            for (int coinIndex = 0; coinIndex < coinAmount; coinIndex++){
+                GameObject newCoin = Instantiate(coinPrefab, randomCoinPos, Quaternion.identity, tfRoad);
+                newCoin.transform.localPosition = randomCoinPos;
+                newCoin.transform.localRotation = Quaternion.Euler(0, (Random.Range(0, 13) - 7) * 15, 0);
+                randomCoinPos = GetRandomPosOnRoad(roadLength, roadWidth, 0.8f);
+            }
+            ///////////////////////////
+
+            /////////// AXE ///////////
+            Vector3 randomAxePos = GetRandomPosOnRoad(roadLength, roadWidth, 4.5f);
+            bool spawnAxe = Random.Range(0, 2) == 1 ? true : false;
+            if (spawnAxe){
+                GameObject newAxe = Instantiate(axePrefab, randomAxePos, Quaternion.identity, tfRoad);
+                newAxe.transform.localPosition = randomAxePos;
+            }
+            ///////////////////////////
+
+            /////////// PROP //////////
+            if (!spawnAxe){ // it is better to have only one trap on a road piece
+                Vector3 randomPropPos = GetRandomPosOnRoad(roadLength, roadWidth, 1f);
+                bool spawnProp = Random.Range(0, 2) == 1 ? true : false;
+                if (spawnProp){
+                    GameObject newProp = Instantiate(propPrefab, randomPropPos, Quaternion.identity, tfRoad);
+                    newProp.transform.localPosition = randomPropPos;
+                }
+            }
+            ///////////////////////////
+
+        }else{ // if it is road junction
+
+            // spawn traps at the center
+
+            /////////// AXE ///////////
+            bool spawnAxe = Random.Range(0, 2) == 1 ? true : false;
+            if (spawnAxe){
+                GameObject newAxe = Instantiate(axePrefab, Vector3.zero, Quaternion.identity, tfRoad);
+            }
+            ///////////////////////////
+
+            /////////// PROP //////////
+            if (!spawnAxe){ // it is better to have only one trap on a road piece
+                bool spawnProp = Random.Range(0, 2) == 1 ? true : false;
+                if (spawnProp){
+                    GameObject newProp = Instantiate(propPrefab, Vector3.zero, Quaternion.identity, tfRoad);
+                }
+            }
+            ///////////////////////////
+
         }
+
+    }
+
+    private Vector3 GetRandomPosOnRoad(float roadSizeX, float roadSizeZ, float posY){
+        float xAxisFactor = Random.Range(1, (int)roadLength) / roadLength;
+        float zAxisFactor = Random.Range(1, (int)roadWidth) / roadWidth;
+        return new Vector3(xAxisFactor * roadLength - roadLength / 2, posY, zAxisFactor * roadWidth - roadWidth / 2);
     }
 
     private GameObject CreateRandomRoad(RoadType currentRoadType, Vector3 currentRoadSpawnPos){
