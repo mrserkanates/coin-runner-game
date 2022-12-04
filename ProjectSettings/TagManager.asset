@@ -4,8 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Coin
   - MainCoin
+  - Collected
+  - Uncollected
   layers:
   - Default
   - TransparentFX

@@ -15,12 +15,9 @@ public class CoinMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    void Start(){
-        //radius = GetComponent<MeshCollider>().bounds.size.x / 2;
-        Destroy(GetComponent<Collider>());
-    }
-
     public void DropCoin(){
+        rb.constraints = RigidbodyConstraints.None;
+        rb.AddForceAtPosition(transform.forward * 2f, transform.position + Vector3.up * radius, ForceMode.Impulse);
         Destroy(GetComponent<CoinMovement>());
     }
 
@@ -29,7 +26,8 @@ public class CoinMovement : MonoBehaviour
         if (ConnectedCoin != null){
             Vector3 newPosition = ConnectedCoin.position + ConnectedCoin.right * radius * 2;
             rb.MovePosition(Vector3.Lerp(transform.position, newPosition, Time.fixedDeltaTime * followSpeed));
-            rb.MoveRotation(Quaternion.RotateTowards(transform.rotation, ConnectedCoin.rotation, 120 * Time.fixedDeltaTime));
+            rb.MoveRotation(Quaternion.identity * Quaternion.Euler(Vector3.Lerp(transform.eulerAngles, ConnectedCoin.eulerAngles, 240 * Time.fixedDeltaTime)));
+            //rb.MoveRotation(Quaternion.RotateTowards(transform.rotation, ConnectedCoin.rotation, 180 * Time.fixedDeltaTime));
             transform.localScale = Vector3.Lerp(transform.localScale, ConnectedCoin.localScale, Time.fixedDeltaTime * 60);
         }
     }

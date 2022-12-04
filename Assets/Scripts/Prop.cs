@@ -20,13 +20,12 @@ public class Prop : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision other){
-        Debug.Log("calisiyor");
+    private void OnTriggerEnter(Collider other){
         if (other.gameObject.tag == "MainCoin"){
-            EventManager.TriggerEvent(Events.OnFailLevel, new Dictionary<string, object>());
-        }else if (other.gameObject.tag == "Coin"){
-            EventManager.TriggerEvent(Events.OnLoseCoin, new Dictionary<string, object>(){{"transform", other.transform}});
-            Debug.Log("YEAPPU");
+            EventManager.TriggerEvent(Events.OnFailLevel, new Dictionary<string, object>(){});
+            EventManager.TriggerEvent(Events.OnHitMainCoin, new Dictionary<string, object>(){});
+        }else if (other.gameObject.tag == "Collected"){
+            EventManager.TriggerEvent(Events.OnHitCoin, new Dictionary<string, object>(){{"transform", other.transform}});
         }
     }
 }

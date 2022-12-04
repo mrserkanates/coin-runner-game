@@ -1,5 +1,10 @@
 public enum Events{
+    OnStartNewLevel,
     OnStartLevel,
+    OnHitMainCoin,
+    OnFallMainCoin,
     OnFailLevel,
-    OnLoseCoin,
+    OnFinishLevel,
+    OnWinLevel,
+    OnHitCoin,
 }
