@@ -5,31 +5,39 @@ using UnityEngine;
 public class CoinMovement : MonoBehaviour
 {
     private Transform connectedCoin;
-    private float radius = 0.3f;
     private float followSpeed = 8f;
+    private float scaleSpeed = 60f;
+    private float rotateSpeed = 240f;
     private Rigidbody rb;
-
-    public Transform ConnectedCoin { get => connectedCoin; set => connectedCoin = value; }
 
     private void Awake() {
         rb = GetComponent<Rigidbody>();
     }
 
-    public void DropCoin(){
-        rb.constraints = RigidbodyConstraints.None;
-        rb.AddForceAtPosition(transform.forward * 2f, transform.position + Vector3.up * radius, ForceMode.Impulse);
-        Destroy(GetComponent<CoinMovement>());
-    }
-
     void FixedUpdate()
     {
         if (ConnectedCoin != null){
-            Vector3 newPosition = ConnectedCoin.position + ConnectedCoin.right * radius * 2;
-            rb.MovePosition(Vector3.Lerp(transform.position, newPosition, Time.fixedDeltaTime * followSpeed));
-            rb.MoveRotation(Quaternion.identity * Quaternion.Euler(Vector3.Lerp(transform.eulerAngles, ConnectedCoin.eulerAngles, 240 * Time.fixedDeltaTime)));
-            //rb.MoveRotation(Quaternion.RotateTowards(transform.rotation, ConnectedCoin.rotation, 180 * Time.fixedDeltaTime));
-            transform.localScale = Vector3.Lerp(transform.localScale, ConnectedCoin.localScale, Time.fixedDeltaTime * 60);
+            rb.MovePosition(Vector3.Lerp(transform.position,
+                ConnectedCoin.position + ConnectedCoin.right * MainCoin.COIN_RADIUS * 2,
+                Time.fixedDeltaTime * followSpeed));
+            rb.MoveRotation(Quaternion.identity * Quaternion.Euler(Vector3.Lerp(transform.eulerAngles, ConnectedCoin.eulerAngles,
+                rotateSpeed * Time.fixedDeltaTime)));
+            transform.localScale = Vector3.Lerp(transform.localScale, ConnectedCoin.localScale, Time.fixedDeltaTime * scaleSpeed);
         }
     }
+
+#region PUBLIC_FUNCTIONS
+    public void DropCoin(){
+        rb.constraints = RigidbodyConstraints.None;
+        rb.AddForceAtPosition(transform.forward * 1f, transform.position + Vector3.up * MainCoin.COIN_RADIUS, ForceMode.Impulse);
+        Destroy(GetComponent<CoinMovement>());
+    }
+
+#endregion
+
+#region GETTER_AND_SETTERS
+    public Transform ConnectedCoin { get => connectedCoin; set => connectedCoin = value; }
+
+#endregion
     
 }

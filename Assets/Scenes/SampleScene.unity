@@ -816,6 +816,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   runnerCam: {fileID: 715542578}
   mainCoin: {fileID: 1538319671014094419}
+  MovementCollider: {fileID: 702819545}
   StartCanvas: {fileID: 901416776}
   FailCanvas: {fileID: 529007869}
   WinCanvas: {fileID: 336235931}
@@ -1212,7 +1213,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7fe2afff814c9741b6b3f35655fcf7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCoin: {fileID: 1951966207}
 --- !u!61 &702819550
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1440,8 +1440,9 @@ MonoBehaviour:
     type: 3}
   stairsPrefab: {fileID: 2825202821697070419, guid: adabd7939f3fd9447964ff88502e9de9,
     type: 3}
-  metersOfOneUnit: 10
-  platformSize: 10
+  platformSize: 5
+  minCoinAtSingleRoad: 1
+  maxCoinAtSingleRoad: 5
 --- !u!4 &940122882
 Transform:
   m_ObjectHideFlags: 0
@@ -2373,7 +2374,7 @@ MonoBehaviour:
   verticalSpeed: 4.5
   horizontalSpeed: 7
   scalingIncrease: 100
-  platformMaterial: {fileID: 2100000, guid: 273b75c234d2bbb43b0fb8ad3e950fad, type: 2}
+  rotateSpeed: 720
 --- !u!850595691 &2120585758
 LightingSettings:
   m_ObjectHideFlags: 0

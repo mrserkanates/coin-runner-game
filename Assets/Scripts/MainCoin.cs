@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class MainCoin : MonoBehaviour
 {
+    public const float COIN_RADIUS = 0.3f;
     [SerializeField] private float verticalSpeed;
     [SerializeField] private float horizontalSpeed;
     [SerializeField] private float scalingIncrease;
-    [SerializeField] private Material platformMaterial;
+    [SerializeField] private float rotateSpeed;
     private Rigidbody rb;
     private bool isMoving = false;
     private List<Transform> collectedCoins;
@@ -18,12 +19,11 @@ public class MainCoin : MonoBehaviour
     private void Awake() {
         collectedCoins = new List<Transform>();
         rb = GetComponent<Rigidbody>();
-        transform.rotation = Quaternion.identity * Quaternion.Euler(0f, 180f, 0f);
+        transform.rotation = Quaternion.identity * Quaternion.Euler(0f, 180f, 0f); // to prevent coin rotation at the beginning
     }
 
     private void OnEnable() {
-        EventManager.StartListening(Events.OnStartNewLevel, Reset);
-        EventManager.StartListening(Events.OnStartNewLevel, StartMoving);
+        EventManager.StartListening(Events.OnCreateNewLevel, Reset);
         EventManager.StartListening(Events.OnStartLevel, StartMoving);
         EventManager.StartListening(Events.OnHitCoin, DropCoin);
         EventManager.StartListening(Events.OnHitMainCoin, DropAllCoins);
@@ -31,8 +31,7 @@ public class MainCoin : MonoBehaviour
     }
 
     private void OnDisable() {
-        EventManager.StopListening(Events.OnStartNewLevel, Reset);
-        EventManager.StopListening(Events.OnStartNewLevel, StartMoving);
+        EventManager.StopListening(Events.OnCreateNewLevel, Reset);
         EventManager.StopListening(Events.OnStartLevel, StartMoving);
         EventManager.StopListening(Events.OnHitCoin, DropCoin);
         EventManager.StopListening(Events.OnHitMainCoin, DropAllCoins);
@@ -41,20 +40,22 @@ public class MainCoin : MonoBehaviour
 
     private void Update()
     {
-        platformMaterial.SetVector("_Pos", transform.position);
         if (isMoving){
             float horizontalInput = Input.GetAxis("Horizontal");
-            Vector3 movementDirection = movementDirection = new Vector3(verticalSpeed * Time.deltaTime, 0f, -horizontalInput * horizontalSpeed * Time.deltaTime);
+            // x axis is for vertical movements, z axis is for horizontal movements
+            Vector3 movementDirection = new Vector3(verticalSpeed * Time.deltaTime,
+                0f,
+                -horizontalInput * horizontalSpeed * Time.deltaTime);
+
             transform.Translate(movementDirection, Space.World);
-            if (movementDirection != Vector3.zero){
-                movementDirection = new Vector3(movementDirection.z, 0f, -movementDirection.x);
-                Quaternion toRotation = Quaternion.LookRotation(movementDirection, Vector3.up);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, 720 * Time.deltaTime);
-            }else{
-                movementDirection = new Vector3(0f, 0f, -movementDirection.x);
-                Quaternion toRotation = Quaternion.LookRotation(movementDirection, Vector3.up);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, 720 * Time.deltaTime);
-            }
+
+            Quaternion toRotation = Quaternion.LookRotation(new Vector3(movementDirection.z,
+                0f,
+                -movementDirection.x), Vector3.up); 
+
+            transform.rotation = Quaternion.RotateTowards(transform.rotation,
+                toRotation,
+                720 * Time.deltaTime); // rotate towards movement direction
 
             if (transform.position.y < -8f){ // if coin falls from road
                 EventManager.TriggerEvent(Events.OnFallMainCoin, new Dictionary<string, object>(){});
@@ -63,35 +64,196 @@ public class MainCoin : MonoBehaviour
         }
     }
 
+#region PUBLIC_FUNCTIONS
+
+#endregion
+
+#region PRIVATE_FUNCTIONS
+
     private void StartMoving(Dictionary<string, object> message)
     {
         isMoving = true;
     }
-    
+
+    private int GetSiblingIndexByTransform(Transform tf){
+        // returns sibling index of given transform in collectedCoins list
+        for (int coinIndex = 0; coinIndex < collectedCoins.Count; coinIndex++){
+            if (collectedCoins[coinIndex].transform == tf){
+                return coinIndex;
+            }
+        }
+        return -1;
+    }
+
+    private void DropCoin(Dictionary<string, object> message)
+    {
+        // disconnects coin from queue and make it fall
+        var tf = message["transform"]; // transform of coin that is gonna drop
+        if (transform != null){
+            Transform tfCoin = (Transform)tf;
+            int coinIndex = GetSiblingIndexByTransform(tfCoin);
+            if (coinIndex != -1){ //
+                if (coinIndex + 1 < collectedCoins.Count){
+                    // if there is a coin after this coin, then connect next coin to this coin's connected coin
+                    Transform nextCoin = collectedCoins[coinIndex].GetComponent<CoinMovement>().ConnectedCoin;
+                    collectedCoins[coinIndex + 1].GetComponent<CoinMovement>().ConnectedCoin = nextCoin;
+                }
+                collectedCoins[coinIndex].GetComponent<CoinMovement>().DropCoin();
+                collectedCoins[coinIndex].tag = "Uncollected";
+                collectedCoins.RemoveAt(coinIndex);
+            }else{
+                Debug.Log("coin not found in collected coin list");
+            }
+        }else{
+            Debug.Log("transform of coin not found in scene");
+        }
+    }
+
+    private void DropAllCoins(Dictionary<string, object> message)
+    {
+        // drops all coins including main coin
+        isMoving = false; // stops main coin movement
+
+        rb.constraints = RigidbodyConstraints.None; // removes constraints to make rigidbody impulse work
+        rb.AddForceAtPosition(transform.forward * 2f, transform.position + Vector3.down * COIN_RADIUS, ForceMode.Impulse); // applies a force to make main coin fall
+        for (int coinIndex = 0; coinIndex < collectedCoins.Count; coinIndex++){
+            collectedCoins[coinIndex].GetComponent<CoinMovement>().DropCoin();
+        }
+        collectedCoins.Clear();
+    }
+
+    private void TakeCoinsToStairs(Dictionary<string, object> message){
+        // does level completed animation
+        isMoving = false; // stop player to control it manually
+        var tfRoad = message["tfRoad"];
+        if (tfRoad != null){
+            StartCoroutine(DoCompletionAnimation((Transform)tfRoad)); // start animation chain
+        }
+    }
+
+    private IEnumerator DoCompletionAnimation(Transform tfRoad){
+        float movSpeed = 80f; // the movement speed of main coin when it goes towards center of last road segment
+        rb.MoveRotation(Quaternion.identity * Quaternion.Euler(0f, 180f, 0f)); // correct main coins rotation
+
+        Vector3 centerOfRoad = tfRoad.position;
+        centerOfRoad.y = transform.position.y;
+        while (Vector3.Distance(transform.position, centerOfRoad) > 1f){
+        // if distance between main coin and center of the last road segment is not close enough
+            rb.MovePosition(Vector3.MoveTowards(transform.position,
+                centerOfRoad,
+                movSpeed * Time.deltaTime)); // move main coin to center of the last road segment
+            yield return null;
+        }
+
+        rb.MoveRotation(Quaternion.identity * Quaternion.Euler(0f, 180f, 0f)); // correct main coins rotation
+
+        DisconnectCoins(); // disconnect coins to move them independent by main coin
+
+        StartCoroutine(ElevateCoins(tfRoad));
+    }
+
+    private IEnumerator ElevateCoins(Transform tfRoad){
+        // put all coins on top of each other
+        float elevateSpeed = 5f;
+        // set constraints to make main coin move on X axis without rotating
+        rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+
+        for (int coinIndex = 0; coinIndex < collectedCoins.Count; coinIndex++){
+            collectedCoins[coinIndex].rotation = Quaternion.identity * Quaternion.Euler(0f, 180f, 0f); // correct rotation of coins
+            // set constraints to make coins move on X axis without rotating
+            collectedCoins[coinIndex].GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation
+                | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+        }
+
+        Vector3 lastCoinPos = transform.position + Vector3.up * (COIN_RADIUS * 2) * (collectedCoins.Count);
+        while (Vector3.Distance(collectedCoins[collectedCoins.Count - 1].position, lastCoinPos) > 1f){
+        // if topmost coin is not reached to its destination
+            for (int coinIndex = 0; coinIndex < collectedCoins.Count; coinIndex++){
+                collectedCoins[coinIndex].position = Vector3.Lerp(collectedCoins[coinIndex].position,
+                    transform.position + Vector3.up * (COIN_RADIUS * 2) * (coinIndex + 1),
+                    elevateSpeed * Time.deltaTime); // move coins to upwards
+            }
+            yield return null;
+        }
+
+        // if coins are not in exactly desired position, then locate coins to desired positions
+        for (int coinIndex = 0; coinIndex < collectedCoins.Count; coinIndex++){
+            collectedCoins[coinIndex].position = transform.position + Vector3.up * (COIN_RADIUS * 2) * (coinIndex + 1);
+        }
+        yield return new WaitForSeconds(1f); // wait before sending coins to stair steps
+        StartCoroutine(SendCoinsToStairs(tfRoad));
+    }
+
+    private IEnumerator SendCoinsToStairs(Transform tfRoad){
+        // makes coins go to stairs and fall
+        float movSpeed = 5f; // the speed when coins go towards stairs
+        List<Vector3> stairPosList = Stairs.StairPosList; // position list that includes every position of stair steps
+
+        if (collectedCoins.Count == 0){ // if no coin is collected
+            while (Vector3.Distance(transform.position, stairPosList[0]) > 1f){
+                transform.position = Vector3.MoveTowards(transform.position,
+                    new Vector3(stairPosList[0].x, transform.position.y, stairPosList[0].z),
+                    movSpeed * Time.deltaTime); // move main coin to first stair step
+                yield return null;
+            }
+        }else{ // if there are collected coins
+            while (Vector3.Distance(collectedCoins[collectedCoins.Count - 1].position, stairPosList[collectedCoins.Count]) > 1f){
+                for (int coinIndex = 0; coinIndex < collectedCoins.Count; coinIndex++){
+                    collectedCoins[coinIndex].position = Vector3.MoveTowards(collectedCoins[coinIndex].position,
+                        new Vector3(stairPosList[coinIndex + 1].x, collectedCoins[coinIndex].position.y,
+                            stairPosList[coinIndex + 1].z),
+                        movSpeed * Time.deltaTime); // move collected coin to specified stair step
+                }
+                transform.position = Vector3.MoveTowards(transform.position,
+                    new Vector3(stairPosList[0].x, transform.position.y, stairPosList[0].z),
+                    movSpeed * Time.deltaTime); // move main coin to first stair step
+                yield return null;
+            }
+        }
+        
+        yield return new WaitForSeconds(0.5f); // wait before fall the coins
+        DropAllCoins(new Dictionary<string, object>(){}); // make all coins fall
+        yield return new WaitForSeconds(1.5f); // wait before show win screen
+        EventManager.TriggerEvent(Events.OnWinLevel, new Dictionary<string, object>(){});
+    }
+
+    private void DisconnectCoins(){
+        // disconnects all coins from each other
+        for (int coinIndex = 0; coinIndex < collectedCoins.Count; coinIndex++){
+            collectedCoins[coinIndex].GetComponent<CoinMovement>().ConnectedCoin = null;
+        }
+    }
+
     private void OnCollisionEnter(Collision col) {
+
         if (col.gameObject.tag == "Uncollected"){
-            collectedCoins.Add(col.gameObject.transform);
-            col.gameObject.AddComponent<CoinMovement>();
+
+            collectedCoins.Add(col.gameObject.transform); // add new coin to the collected coin list
+            col.gameObject.AddComponent<CoinMovement>(); // add coin movement script to make it follow queue
             col.gameObject.tag = "Collected";
 
-            if (collectedCoins.Count == 1)
+            if (collectedCoins.Count == 1) // if only one coin is collected
                 col.gameObject.GetComponent<CoinMovement>().ConnectedCoin = transform;
-            else{
+            else{ // if more than one coin are collected
                 col.gameObject.GetComponent<CoinMovement>().ConnectedCoin = collectedCoins[collectedCoins.Count - 2].transform;
                 col.gameObject.transform.position = collectedCoins[collectedCoins.Count - 2].transform.position;
             }
 
             col.gameObject.transform.rotation = Quaternion.Euler(0f, 180f, 0f); // to prevent coin rotation at the beginning
 
+            ///// do bounce effect when new coin is collected /////
             if (isScaling){
                 StopCoroutine(ScaleUpAndDown());
                 isScaling = false;
             }
             StartCoroutine(ScaleUpAndDown());
+            ///////////////////////////////////////////////////////
         }
     }
 
     private IEnumerator ScaleUpAndDown(){
+        // makes main coin scale up to desired scale
+        // then scale down to initial scale
         isScaling = true;
         float newScale = initialScale;
         transform.localScale = new Vector3(newScale, newScale, newScale);
@@ -108,100 +270,14 @@ public class MainCoin : MonoBehaviour
         isScaling = false;
     }
 
-    private void DropCoin(Dictionary<string, object> message)
-    {
-        var tf = message["transform"];
-        if (transform != null){
-            Transform tfCoin = (Transform)tf;
-            int coinIndex = GetSiblingIndexByTransform(tfCoin);
-            if (coinIndex != -1){
-                if (coinIndex + 1 < collectedCoins.Count){
-                    Transform nextCoin = collectedCoins[coinIndex].GetComponent<CoinMovement>().ConnectedCoin;
-                    collectedCoins[coinIndex + 1].GetComponent<CoinMovement>().ConnectedCoin = nextCoin;
-                }
-                collectedCoins[coinIndex].GetComponent<CoinMovement>().DropCoin();
-                collectedCoins[coinIndex].tag = "Uncollected";
-                collectedCoins.RemoveAt(coinIndex);
-            }else{
-                Debug.Log("Coin not found in collected coin list");
-            }
-        }
-    }
-
-    private int GetSiblingIndexByTransform(Transform tf){
-        for (int coinIndex = 0; coinIndex < collectedCoins.Count; coinIndex++){
-            if (collectedCoins[coinIndex].transform == tf){
-                return coinIndex;
-            }
-        }
-        return -1;
-    }
-
-    private void DropAllCoins(Dictionary<string, object> message)
-    {
-        isMoving = false;
-        rb.constraints = RigidbodyConstraints.None;
-        rb.AddForceAtPosition(transform.forward * 2f, transform.position + Vector3.down * 0.3f, ForceMode.Impulse);
-        for (int coinIndex = 0; coinIndex < collectedCoins.Count; coinIndex++){
-            collectedCoins[coinIndex].GetComponent<CoinMovement>().DropCoin();
-        }
-    }
-
-    private void TakeCoinsToStairs(Dictionary<string, object> message){
-        isMoving = false;
-        var tfRoad = message["tfRoad"];
-        if (tfRoad != null){
-            StartCoroutine(DoCompletionAnimation((Transform)tfRoad));
-        }
-    }
-
-    private IEnumerator DoCompletionAnimation(Transform tfRoad){
-        rb.MoveRotation(Quaternion.identity * Quaternion.Euler(0f, 180f, 0f));
-        while (Vector3.Distance(transform.position, tfRoad.position) > 1f){
-            rb.MovePosition(Vector3.Lerp(transform.position, tfRoad.position + Vector3.up * 0.8f, 0.8f));
-            yield return null;
-        }
-        Debug.Log("ORTAYA GELDI");
-        RemoveMovementComponents();
-        StartCoroutine(ElevateCoins());
-    }
-
-    private IEnumerator ElevateCoins(){
-        float elevateTime = 2f;
-        float currentTime = 0.0f;
-        for (int coinIndex = 0; coinIndex < collectedCoins.Count; coinIndex++){
-            collectedCoins[coinIndex].rotation = Quaternion.identity * Quaternion.Euler(0f, 180f, 0f);
-            collectedCoins[coinIndex].GetComponent<Rigidbody>().freezeRotation = true;
-            collectedCoins[coinIndex].GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition;
-            rb.freezeRotation = true;
-            rb.constraints = RigidbodyConstraints.FreezePosition;
-        }
-        while (currentTime < elevateTime){
-            for (int coinIndex = 0; coinIndex < collectedCoins.Count; coinIndex++){
-                collectedCoins[coinIndex].position = Vector3.Lerp(collectedCoins[coinIndex].position,
-                    transform.position + Vector3.up * 0.6f * (coinIndex + 1), elevateTime * Time.deltaTime);
-            }
-            currentTime += Time.deltaTime;
-            yield return null;
-        }
-        for (int coinIndex = 0; coinIndex < collectedCoins.Count; coinIndex++){
-            collectedCoins[coinIndex].position = transform.position + Vector3.up * 0.6f * (coinIndex + 1);
-        }
-        Debug.Log("YUKSELDI");
-    }
-
-    private void RemoveMovementComponents(){
-        for (int coinIndex = 0; coinIndex < collectedCoins.Count; coinIndex++){
-            collectedCoins[coinIndex].tag = "Uncollected";
-            Destroy(collectedCoins[coinIndex].GetComponent<CoinMovement>());
-        }
-    }
-
     private void Reset(Dictionary<string, object> message){
-        transform.position = Vector3.zero + Vector3.up * 2f;
+        // resets main coin to prepare it next level
+        collectedCoins.Clear();
+        transform.position = Vector3.zero + Vector3.up * (COIN_RADIUS * 2f);
         transform.rotation = Quaternion.identity * Quaternion.Euler(0f, 180f, 0f);
         rb.constraints = RigidbodyConstraints.None;
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
     }
 
+#endregion
 }

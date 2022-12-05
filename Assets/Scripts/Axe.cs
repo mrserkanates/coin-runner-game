@@ -5,11 +5,11 @@ using UnityEngine;
 public class Axe : MonoBehaviour
 {
     [SerializeField] private float rotationSpeed;
+    [SerializeField] private float minRotX;
+    [SerializeField] private float maxRotX;
     private Rigidbody rb;
     private float currentRotX;
     private float currentRotZ = 0.0f;
-    private float minRotX = 20.0f;
-    private float maxRotX = 160.0f;
     private bool isSwingingRight = true;
 
     private void Awake(){
@@ -41,8 +41,8 @@ public class Axe : MonoBehaviour
 
     private void OnTriggerEnter(Collider other){
         if (other.gameObject.tag == "MainCoin"){
-            EventManager.TriggerEvent(Events.OnFailLevel, new Dictionary<string, object>(){});
             EventManager.TriggerEvent(Events.OnHitMainCoin, new Dictionary<string, object>(){});
+            EventManager.TriggerEvent(Events.OnFailLevel, new Dictionary<string, object>(){});
         }else if (other.gameObject.tag == "Collected"){
             EventManager.TriggerEvent(Events.OnHitCoin, new Dictionary<string, object>(){{"transform", other.transform}});
         }
