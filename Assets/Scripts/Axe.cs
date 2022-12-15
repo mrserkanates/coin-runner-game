@@ -44,7 +44,7 @@ public class Axe : MonoBehaviour
             EventManager.TriggerEvent(Events.OnHitMainCoin, new Dictionary<string, object>(){});
             EventManager.TriggerEvent(Events.OnFailLevel, new Dictionary<string, object>(){});
         }else if (other.gameObject.tag == "Collected"){
-            EventManager.TriggerEvent(Events.OnHitCoin, new Dictionary<string, object>(){{"transform", other.transform}});
+            EventManager.TriggerEvent(Events.OnHitCoin, new Dictionary<string, object>(){{"transform", other.transform}, {"isRemoveFromList", true}});
         }
     }
 }

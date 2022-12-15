@@ -32,8 +32,8 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private int maxCoinAtSingleRoad;
 
     private float coinOffsetY = 0.8f; // needed Y offset while creating coins
-    private float axeOffsetY = 4.5f; // needed Y offset while creating axes
-    private float propOffsetY = 1f; // needed Y offset while creating props
+    private float axeOffsetY = 4.45f; // needed Y offset while creating axes
+    private float propOffsetY = 1.2f; // needed Y offset while creating props
 
     private void OnEnable() {
         EventManager.StartListening(Events.OnCreateNewLevel, GenerateLevel);
@@ -111,7 +111,7 @@ public class LevelGenerator : MonoBehaviour
 
         // create stairs at the end
         GameObject stairs = Instantiate(stairsPrefab,
-            currentRoadSpawnPos + Vector3.right * (ROAD_LENGTH / 2) + Vector3.up * 0.3f,
+            currentRoadSpawnPos + Vector3.right * (ROAD_LENGTH / 2) + Vector3.down * 0.1f,
             Quaternion.Euler(0f, 90f, 0f), transform);
     }
 
@@ -123,14 +123,22 @@ public class LevelGenerator : MonoBehaviour
             // spawn coins and traps at random positions 
 
             ////////// COIN //////////
+            List<Vector3> coinPositions = new List<Vector3>();
             int coinAmount = Random.Range(minCoinAtSingleRoad, maxCoinAtSingleRoad + 1);
             Vector3 randomCoinPos = GetRandomPosOnRoad(ROAD_LENGTH, ROAD_WIDTH, coinOffsetY);
+            coinPositions.Add(randomCoinPos);
             for (int coinIndex = 0; coinIndex < coinAmount; coinIndex++){
                 GameObject newCoin = Instantiate(coinPrefab, randomCoinPos, Quaternion.identity, tfRoad);
                 newCoin.transform.localPosition = randomCoinPos;
                 // give a random rotation to coin
                 newCoin.transform.localRotation = Quaternion.Euler(0, (Random.Range(0, 13) - 7) * 15, 0);
                 randomCoinPos = GetRandomPosOnRoad(ROAD_LENGTH, ROAD_WIDTH, coinOffsetY);
+                while (coinPositions.Contains(randomCoinPos)){
+                    // if a coin is already created in this position
+                    // then change the random position
+                    randomCoinPos = GetRandomPosOnRoad(ROAD_LENGTH, ROAD_WIDTH, coinOffsetY);
+                }
+                coinPositions.Add(randomCoinPos);
             }
             ///////////////////////////
 
